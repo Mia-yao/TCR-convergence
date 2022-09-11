@@ -21,7 +21,7 @@ c=a.readlines()
 aa=[]
 nt=[]
 tmp=[]
-for i in c:
+for i in c: 
     q=i.strip()
     barcode,TCR_nt,TCR_aa,state,seurat_clusters,celltype=q.split(',')
     if aa==[]:
@@ -31,7 +31,6 @@ for i in c:
     elif aa!=[] and TCR_aa in aa:
         if TCR_nt not in nt:
             nt.append(TCR_nt)
-            i=q+',T'+'\n'
             tmp.append(i)
         else:
             tmp.append(i)
