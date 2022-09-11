@@ -1,6 +1,6 @@
 #Process the raw TCR-seq file, conbine the CDR3 sequence and variable gene of both alpha and beta chains
 a=open(r'\filtered_contig_annotations.csv','r')
-b=open(r'\tcr_po.csv','w')
+b=open(r'\tcr.csv','w')
 c=a.readlines()
 first='barcode,TCR_nt,TCR_aa'+'\n'
 b.write(first)
@@ -47,7 +47,7 @@ a.close()
 b.close()
 
 #Select non-convergent TCRs
-b=open(r'\Convergence_rev.csv','r')
+b=open(r'\Convergence.csv','r')
 p=b.readlines()
 l=al.readlines()
 for i in l:
