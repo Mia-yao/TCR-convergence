@@ -1,7 +1,31 @@
-#Process the raw TCR-seq file, conbine the CDR3 sequence and variable gene of both alpha and beta chains
-a=open(r'\filtered_contig_annotations.csv','r')
-b=open(r'\tcr.csv','w')
+import pandas as pd
+
+#Process the raw TCR-seq file
+a=pd.read_csv(r'\filtered_contig_annotations.csv')
+a=a[['barcode','chain','v_gene','cdr3','cdr3_nt']]
+a=a.dropna(how='any')
+TRA=a.loc[a['chain']=='TRA',]
+TRB=a.loc[a['chain']=='TRB',]
+TRA=TRA.drop_duplicates(subset='barcode',keep=False)
+TRB=TRB.drop_duplicates(subset='barcode',keep=False)
+TCR=pd.concat([TRA,TRB])
+TCR=TCR.loc[TCR.duplicated(subset='barcode',keep=False),]
+TRA=TCR.loc[TCR['chain']=='TRA',]
+TRB=TCR.loc[TCR['chain']=='TRB',]
+TRA=TRA.set_index('barcode',drop=True)
+TRB=TRB.set_index('barcode',drop=True)
+TRA.sort_values(by='barcode')
+TRB.sort_values(by='barcode')
+TRA.reset_index()
+TRB.reset_index()
+TCR=pd.concat([TRA,TRB],axis=1,ignore_index=True)
+TCR.to_csv(r'\tcr.csv')
+
+#Conbine the CDR3 sequence and variable gene of both alpha and beta chains
+a=open(r'\tcr.csv','r')
+b=open(r'\tcr_processed.csv','w')
 c=a.readlines()
+c=c[1:]
 first='barcode,TCR_nt,TCR_aa'+'\n'
 b.write(first)
 for i in c:
@@ -12,18 +36,25 @@ for i in c:
 a.close()
 b.close()
 
+b=pd.read_csv(r'\tcr_processed.csv')
+TCR=b.sort_values(by='TCR_aa')
+TCR=TCR.loc[TCR.duplicated(subset='TCR_aa',keep=False),]
+TCR.to_csv(r'\tcr_di.csv',index=0)
+
 #Select out convergent TCR 
 a=open(r'\tcr_di.csv','r') #Contain TCR amino acid detected in more than one cell
-al=open(r'\tcr.csv','r') #Contain all the TCR reads
+al=open(r'\tcr_processed.csv','r') #Contain all the TCR reads
 b=open(r'\Convergence.csv','w') #Convergent TCRs files
 rev=open(r'\Convergence_rev.csv','w') #Non-convergent TCRs files
 c=a.readlines()
+b.write(first)
+rev.write(first)
 aa=[]
 nt=[]
 tmp=[]
 for i in c: 
     q=i.strip()
-    barcode,TCR_nt,TCR_aa,state,seurat_clusters,celltype=q.split(',')
+    barcode,TCR_nt,TCR_aa=q.split(',')
     if aa==[]:
         aa.append(TCR_aa)
         nt.append(TCR_nt)
@@ -54,4 +85,3 @@ for i in l:
         rev.write(i)
 al.close()
 rev.close()
-        
