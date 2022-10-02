@@ -5,7 +5,7 @@ names=[i.strip() for i in names]
 
 #Assign the degeneracy of each TCR amino aicd sequence by counting the number of TCR nucleotide sequences corresponding to it
 b=open(r'/Degeneracy.csv','w')
-b.write('Amino_acid,degeneracy')
+b.write('Amino_acid,degeneracy/n')
 for Sample in names:
     ee=open(r'/processed/%s'%Sample+'_po.csv','r')
     a=ee.readlines()
