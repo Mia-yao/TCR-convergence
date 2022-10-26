@@ -1,5 +1,5 @@
 #Put the file names into a list
-name=open(r'/names.csv','r')
+name=open(r'/sample_name.csv','r')
 names=name.readlines()
 names=[i.strip() for i in names]
 
